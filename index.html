@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Eliza · 英语学习平台 (四六级)</title>
+<style>
+:root{--p:#6C63FF;--s:#9B59B6;--bg:#f0f4f8;--bc:#fff;--t1:#1e293b;--t2:#475569;--t3:#64748b;--t4:#94a3b8;--b:#e2e8f0;--cv:#10b981;--cg:#3b82f6;--cr:#f59e0b;--cw:#ef4444;--cl:#8b5cf6;--ce:#ec4899}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#e0e7ff,#faf5ff 50%,#fff1f2);min-height:100vh;color:var(--t1);overflow-x:hidden}::selection{background:rgba(108,99,255,.2)}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;max-width:1440px;margin:0 auto;animation:fu .5s}
+.hdr-l{display:flex;align-items:center;gap:12px}.hdr-l .lg{width:36px;height:36px;background:linear-gradient(135deg,var(--p),var(--s));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700}
+.hdr-l h1{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--p),var(--s));-webkit-background-clip:text;background-clip:text;color:transparent}.hdr-l .sb{font-size:.8rem;color:var(--t3);margin-left:6px}
+.hdr-r{display:flex;gap:8px}.hdr-r .tb{padding:6px 16px;border:none;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;background:var(--b);color:var(--t2);transition:all .15s}
+.hdr-r .tb.ac{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(108,99,255,.25)}.hdr-r .tb:hover:not(.ac){background:#d1d5db}
+.c{max-width:1440px;margin:0 auto;padding:0 28px 28px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:24px;animation:fu .5s .1s both}@media(max-width:800px){.pg{grid-template-columns:1fr}}
+.wl{background:var(--bc);border-radius:16px;padding:28px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:16px}
+.wl .gt{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--p),var(--s));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.3}
+.wl .desc{font-size:.9rem;color:var(--t3);line-height:1.7}
+.wl .st{font-size:.95rem;font-weight:600;margin-top:4px}.wl .sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.wl .sg .it{background:linear-gradient(135deg,#fafbfc,#f1f5f9);border-radius:10px;padding:12px;text-align:center;border:1px solid var(--b)}
+.wl .sg .it .nm{font-size:1.6rem;font-weight:700;color:var(--p)}.wl .sg .it .lb{font-size:.75rem;color:var(--t3)}
+.lk{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}.lk .lk-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.lk .lk-btn.prim{background:var(--p);color:#fff;box-shadow:0 4px 12px rgba(108,99,255,.25)}.lk .lk-btn.prim:hover{transform:translateY(-2px)}
+.lk .lk-btn.sec{background:linear-gradient(135deg,#fafbfc,#f1f5f9);color:var(--t2);border:1px solid var(--b)}.lk .lk-btn.sec:hover{background:var(--b)}
+.qa{background:var(--bc);border-radius:16px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex;flex-direction:column}
+.qa .st{font-size:.9rem;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px solid #f1f5f9}
+.cgw{flex:1;overflow-y:auto;min-height:0;max-height:550px}
+.cgw::-webkit-scrollbar{width:4px}.cgw::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#8B85FF,#9B59B6);border-radius:2px}
+.cg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(max-width:600px){.cg{grid-template-columns:1fr}}
+.cd{border-radius:10px;padding:14px;color:var(--t1);border:1px solid var(--b);border-left:4px solid var(--t4);cursor:pointer;display:flex;flex-direction:column;gap:6px;background:linear-gradient(135deg,#fafbfc,#f1f5f9);transition:all .2s}
+.cd:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.cd[data-c="词汇"]{border-left-color:var(--cv)}.cd[data-c="语法"]{border-left-color:var(--cg)}.cd[data-c="阅读"]{border-left-color:var(--cr)}.cd[data-c="写作"]{border-left-color:var(--cw)}.cd[data-c="听力"]{border-left-color:var(--cl)}.cd[data-c="应试"]{border-left-color:var(--ce)}
+.cd h3{font-size:.85rem;font-weight:600}.cd .lb{display:inline-flex;padding:2px 8px;border-radius:8px;font-size:.6rem;font-weight:600;color:#fff;align-self:flex-start}
+.l1{background:var(--cv)}.l2{background:var(--cg)}.l3{background:var(--cw)}.l4{background:var(--cl)}.l5{background:var(--ce)}
+.ch{display:flex;flex-direction:column;height:500px;border-radius:12px;overflow:hidden;border:1px solid var(--b);background:var(--bc)}
+.ch .cm{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--bg)}
+.ch .cm .m{max-width:90%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.6;word-wrap:break-word;white-space:pre-wrap}
+.ch .cm .m.u{background:var(--p);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.ch .cm .m.e{background:var(--bc);align-self:flex-start;border-bottom-left-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ch .cm .m.e .l{font-size:10px;color:var(--p);font-weight:600;display:block;margin-bottom:2px}
+.ch .ci{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--b);background:var(--bc)}
+.ch .ci input{flex:1;padding:8px 12px;border:1px solid var(--b);border-radius:18px;font-size:13px;outline:none}.ch .ci input:focus{border-color:var(--p)}
+.ch .ci button{width:34px;height:34px;border:none;border-radius:50%;background:var(--p);color:#fff;font-size:14px;cursor:pointer;flex-shrink:0}
+.ft{text-align:center;padding:24px 28px 16px;font-size:.7rem;color:var(--t4);max-width:1440px;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="hdr">
+<div class="hdr-l"><div class="lg">E</div><h1>Eliza<span class="sb">英语学习平台</span></h1></div>
+<div class="hdr-r"><button class="tb ac" id="tab0" onclick="swT(0)">📖 学习</button><button class="tb" id="tab1" onclick="swT(1)">💬 AI 对话</button></div>
+</div>
+<div class="c" id="mainView">
+<div class="pg">
+<div class="wl">
+<div class="gt">建立英语直觉<span><br>掌握四六级核心技能</span></div>
+<div class="desc">点击右侧卡片进入对应模块学习。语法/阅读/写作/听力/应试均为离线内容。</div>
+<div class="st">📊 学习统计</div>
+<div class="sg"><div class="it"><div class="nm">6</div><div class="lb">技能分类</div></div><div class="it"><div class="nm">23</div><div class="lb">知识点</div></div><div class="it"><div class="nm">5</div><div class="lb">难度等级</div></div></div>
+<div class="lk"><button class="lk-btn prim" onclick="swT(1)">💬 AI 对话</button></div>
+</div>
+<div class="qa">
+<div class="st">📖 技能模块</div>
+<div class="cgw"><div class="cg" id="cg"></div></div>
+</div>
+</div>
+</div>
+<div class="c" id="chatView" style="display:none">
+<div class="ch"><div class="cm" id="cm"><div class="m e"><span class="l">Eliza</span>你好！👋 我是你的英语学习助手。问我关于四六级英语的任何问题！</div></div>
+<div class="ci"><input id="inp" placeholder="输入问题..." /><button onclick="snd()">➤</button></div></div>
+</div>
+<div class="ft">Eliza · 四六级英语学习平台</div>
+<script>
+var T=[
+{id:"vocab",n:"核心词汇",c:"词汇",l:1},{id:"roots",n:"词根词缀",c:"词汇",l:2},{id:"colloc",n:"词语搭配",c:"词汇",l:2},{id:"syn",n:"同义辨析",c:"词汇",l:3},
+{id:"tense",n:"时态语态",c:"语法",l:1},{id:"clause",n:"从句",c:"语法",l:2},{id:"nonf",n:"非谓语动词",c:"语法",l:2},{id:"subj",n:"虚拟语气",c:"语法",l:3},{id:"inv",n:"倒装省略",c:"语法",l:3},
+{id:"skim",n:"略读扫读",c:"阅读",l:1},{id:"rdetail",n:"仔细阅读",c:"阅读",l:2},{id:"rbank",n:"选词填空",c:"阅读",l:2},{id:"rcrit",n:"批判阅读",c:"阅读",l:3},
+{id:"estruc",n:"段落结构",c:"写作",l:2},{id:"wargue",n:"议论文",c:"写作",l:3},{id:"wletter",n:"应用文",c:"写作",l:2},{id:"trans",n:"翻译技巧",c:"写作",l:3},
+{id:"lnews",n:"新闻听力",c:"听力",l:1},{id:"lconv",n:"长对话",c:"听力",l:2},{id:"lpass",n:"篇章听力",c:"听力",l:3},
+{id:"eskill",n:"解题技巧",c:"应试",l:3},{id:"espeed",n:"时间分配",c:"应试",l:4},{id:"epredict",n:"押题预测",c:"应试",l:5}
+];
+var GD={tense:{t:"时态语态",en:"Tenses & Voice",d:"英语考试常考一般现在、现在完成、过去完成、进行时及被动语态。",rs:[{t:"一般现在表习惯/真理",eg:"The sun rises in the east."},{t:"现在完成强调影响",eg:"I have finished my work."},{t:"被动 = be + 过去分词",eg:"The room is cleaned daily."}]},clause:{t:"从句",en:"Clauses",d:"定语从句、名词性从句、状语从句是三大从句。",rs:[{t:"定语从句用 who/which/that",eg:"The book which I bought is good."},{t:"that 从句作主语",eg:"That he passed is great."},{t:"状语从句表条件",eg:"If it rains, we will stay."}]},nonf:{t:"非谓语动词",en:"Non-finite Verbs",d:"不定式(to do)、动名词(doing)、分词(doing/done)。",rs:[{t:"不定式表目的",eg:"I went to study."},{t:"动名词作主语",eg:"Swimming is fun."},{t:"过去分词表被动",eg:"Given time, I would succeed."}]},subj:{t:"虚拟语气",en:"Subjunctive Mood",d:"表示假设、愿望等非真实情况。",rs:[{t:"与现在相反: if+过去式",eg:"If I were you, I would go."},{t:"与过去相反: if+had done",eg:"If I had known, I would have come."},{t:"suggest 后用 should do",eg:"I suggest he study."}]},inv:{t:"倒装与省略",en:"Inversion & Ellipsis",d:"否定词开头的部分倒装、Only+状语倒装。",rs:[{t:"否定词开头倒装",eg:"Never have I seen this."},{t:"Only+状语倒装",eg:"Only then did I realize."},{t:"省略",eg:"She can dance, so can I."}]}};
+var RD=[{y:"CET-4 真题",t:"The Sharing Economy",x:"The sharing economy has grown rapidly in recent years. Companies like Uber and Airbnb have shown that people are willing to share their cars and homes with strangers.\n\nHowever, critics argue that it creates unfair competition. Despite these challenges, the sharing economy continues to expand.",q:[{q:"What is the main idea?",o:["A. Only Uber benefits","B. Growing with multiple benefits","C. People prefer saving","D. Only developed countries"],a:1},{q:"What concern is mentioned?",o:["A. Too expensive","B. Unfair competition","C. Benefits wealthy only"],a:1}]},{y:"CET-6 真题",t:"AI and Employment",x:"AI is transforming the workplace. A recent report suggests up to 30% of jobs could be automated by 2030.",q:[{q:"What % might be automated?",o:["A. 10%","B. 20%","C. 30%","D. 50%"],a:2}]}];
+var WD=[{t:"Why Bilingual Education Matters",p:"Bilingual education has become increasingly important. Learning a second language enhances cognitive abilities and fosters cultural understanding.\n\nFirstly, bilingual children develop better problem-solving skills. Secondly, it opens up more career opportunities.\n\nIn conclusion, the benefits far outweigh the challenges.",a:"三段式结构。亮点：increasingly important, fosters, outweigh."},{t:"The Impact of Digital Payments",p:"Digital payment systems have transformed daily transactions. On the positive side, they offer unprecedented convenience. However, challenges remain regarding cybersecurity.\n\nAs the technology matures, we can expect more innovations.",a:"正反对比。亮点：transformed, unprecedented convenience."}];
+var LD=[{y:"CET-4",t:"University Library",s:"美式",x:"The university library is open from 8am to 10pm. You can borrow up to ten books for two weeks. Free Wi-Fi is available."},{y:"CET-6",t:"Climate Change",s:"英式",x:"Scientists warn climate change is causing more extreme weather. Rising temperatures lead to more heatwaves. Coastal cities are vulnerable to rising sea levels."}];
+var ED=[{t:"听力技巧",m:"Listening",sec:[{h:"新闻听力",c:"首句是核心(5W1H)"},{h:"长对话",c:"关注but/however后的转折"}]},{t:"阅读技巧",m:"Reading",sec:[{h:"选词填空",c:"先标词性"},{h:"仔细阅读",c:"细节定位精读"}]},{t:"翻译技巧",m:"Translation",sec:[{h:"核心",c:"语法正确即可"}]}];
+var msgs=[{role:"system",content:"You are Eliza, a friendly CET-4/6 English tutor. Keep responses under 150 words."}];
+var OK="sk-91cc485d56fc4dee8b2aba2b6a2ac58a";
+
+function swT(i){
+  var tb=document.querySelectorAll(".hdr-r .tb");
+  tb.forEach(function(x){x.classList.remove("ac")});tb[i].classList.add("ac");
+  document.getElementById("mainView").style.display=i===0?"block":"none";
+  document.getElementById("chatView").style.display=i===1?"block":"none";
+}
+function rc(){
+  var el=document.getElementById("cg");if(!el)return;
+  el.innerHTML=T.map(function(t){return'<div class="cd" data-c="'+t.c+'" onclick="op(\''+t.id+'\')"><h3>'+t.n+'</h3><span class="lb l'+t.l+'">Lv'+t.l+' · '+t.c+'</span></div>'}).join("");
+}
+function op(id){
+  document.getElementById("mainView").innerHTML='<div style="animation:fu .3s;background:var(--bc);border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(0,0,0,.08);max-width:800px;margin:0 auto">'+getContent(id)+'<div style="margin-top:16px"><button onclick="location.reload()" style="padding:8px 20px;border:none;border-radius:10px;background:var(--b);color:var(--t2);font-size:13px;font-weight:600;cursor:pointer">← 返回</button></div></div>';
+}
+function getContent(id){
+  if(GD[id]){var g=GD[id];return'<h2 style="font-size:1.3rem;font-weight:700;margin-bottom:4px">'+g.t+'</h2><p style="font-size:.85rem;color:var(--t3);margin-bottom:8px">'+g.en+'</p><p style="font-size:.9rem;margin-bottom:12px;color:var(--t2)">'+g.d+'</p>'+g.rs.map(function(r){return'<div style="padding:10px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px;font-size:.85rem"><strong>'+r.t+'</strong><br><em style="color:var(--t2)">'+r.eg+'</em></div>'}).join("");}
+  if(id==="vocab"||id==="roots"||id==="colloc"||id==="syn"){return'<h2 style="font-size:1.3rem;font-weight:700">词汇学习</h2><p style="font-size:.85rem;color:var(--t3);margin-bottom:12px">词汇模块需要联网。请切换到 💬 AI 对话 或学习其他离线模块。</p>';}
+  if(id==="skim"||id==="rdetail"||id==="rbank"||id==="rcrit"){
+    var ri=Math.floor(Math.random()*RD.length),p=RD[ri],html='<h2 style="font-size:1.3rem;font-weight:700;margin-bottom:4px">'+p.t+'</h2><p style="font-size:.8rem;color:var(--t3);margin-bottom:10px">'+p.y+' · 点击选项查看答案</p><div style="background:var(--bg);border-radius:8px;padding:12px;margin-bottom:10px;font-size:.85rem;line-height:1.7">'+p.x.replace(/\n/g,"<br>")+'</div>'+p.q.map(function(q,qi){return'<div style="margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--b)"><div style="font-weight:600;font-size:.8rem;color:var(--p);margin-bottom:3px">Q'+(qi+1)+'</div><div style="font-size:.85rem;margin-bottom:4px">'+q.q+'</div>'+q.o.map(function(o,oi){return'<button onclick="(function(btns,ai){btns.forEach(function(x,i){x.disabled=true;if(i===ai){x.style.borderColor=\'#10b981\';x.style.background=\'#E8F8F0\'}else{x.style.borderColor=\'#ef4444\';x.style.background=\'#FDEAEA\'}})})(this.parentElement.querySelectorAll(\'button\'),'+q.a+')" style="display:block;width:100%;text-align:left;padding:5px 9px;border:1.5px solid var(--b);border-radius:7px;background:var(--bc);font-size:.8rem;cursor:pointer;margin-bottom:3px;color:var(--t1)">'+o+"</button>"}).join("")+"</div>"}).join("");return html;
+  }
+  if(id==="estruc"||id==="wargue"||id==="wletter"||id==="trans"){
+    var w=WD[Math.floor(Math.random()*WD.length)];return'<h2 style="font-size:1.3rem;font-weight:700;margin-bottom:4px">'+w.t+'</h2><p style="font-size:.8rem;color:var(--t3);margin-bottom:8px">议论文 · 常考话题</p><div style="background:var(--bg);border-radius:8px;padding:12px;margin-bottom:8px;font-size:.85rem;line-height:1.85">'+w.p.replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>")+'</div><div style="background:rgba(108,99,255,.05);border-radius:8px;padding:10px;font-size:.8rem"><strong>解析：</strong>'+w.a+"</div>";
+  }
+  if(id==="lnews"||id==="lconv"||id==="lpass"){
+    var l=LD[Math.floor(Math.random()*LD.length)];return'<h2 style="font-size:1.3rem;font-weight:700;margin-bottom:4px">'+l.t+'</h2><p style="font-size:.8rem;color:var(--t3);margin-bottom:10px">'+l.s+" · "+l.y+' · 🎧 听力模拟</p><div style="background:var(--bg);border-radius:8px;padding:12px;font-size:.85rem;line-height:1.7">'+l.x+"</div>";
+  }
+  if(id==="eskill"||id==="espeed"||id==="epredict"){
+    var e=ED[Math.floor(Math.random()*ED.length)];return'<h2 style="font-size:1.3rem;font-weight:700;margin-bottom:4px">'+e.t+'</h2><p style="font-size:.8rem;color:var(--t3);margin-bottom:8px">'+e.m+"</p>"+e.sec.map(function(s){return'<div style="margin-bottom:8px"><h4 style="font-size:.85rem;font-weight:600;color:var(--p);margin-bottom:3px">'+s.h+'</h4><p style="font-size:.8rem;color:var(--t2)">'+s.c+"</p></div>"}).join("");
+  }
+  return"<div>内容加载中...</div>";
+}
+function am(t,r){
+  var el=document.getElementById("cm");if(!el)return;
+  var d=document.createElement("div");d.className="m "+r;
+  if(r=="e"){d.innerHTML='<span class="l">Eliza</span>'+t.replace(/\n/g,"<br>")}else{d.textContent=t}
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+function sl(){var el=document.getElementById("cm");if(!el)return;var d=document.createElement("div");d.className="m e";d.id="cl";d.innerHTML='<span class="l">Eliza</span>⏳';el.appendChild(d);el.scrollTop=el.scrollHeight}
+function hl(){var el=document.getElementById("cl");if(el)el.remove()}
+async function snd(){
+  var inp=document.getElementById("inp");var txt=inp.value.trim();if(!txt)return;
+  inp.value="";am(txt,"u");msgs.push({role:"user",content:txt});sl();
+  try{
+    var r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+OK},
+      body:JSON.stringify({model:"gpt-3.5-turbo",messages:msgs,max_tokens:500})});
+    var d=await r.json();hl();
+    if(d.error){am("API: "+d.error.message,"e")}else{var reply=d.choices[0].message.content.trim();am(reply,"e");msgs.push({role:"assistant",content:reply})}
+  }catch(e){hl();am("无法连接AI服务（浏览器CORS限制）。安装 Allow CORS 插件后即可正常使用。","e")}
+}
+document.getElementById("inp").addEventListener("keydown",function(e){if(e.key=="Enter"){e.preventDefault();snd()}});
+rc();
+</script>
+</body>
+</html>
