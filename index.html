@@ -79,7 +79,6 @@ var RD=JSON.parse('[{"y":"CET-4 真题","t":"The Sharing Economy","x":"The shari
 var WD=JSON.parse('[{"t":"Why Bilingual Education Matters","p":"Bilingual education has become increasingly important. Learning a second language enhances cognitive abilities and fosters cultural understanding.\n\nFirstly, bilingual children develop better problem-solving skills. Secondly, it opens up more career opportunities.\n\nIn conclusion, the benefits far outweigh the challenges.","a":"三段式结构。亮点：increasingly important, fosters, outweigh."},{"t":"The Impact of Digital Payments","p":"Digital payment systems have transformed daily transactions. On the positive side, they offer unprecedented convenience. However, challenges remain regarding cybersecurity.\n\nAs the technology matures, we can expect more innovations.","a":"正反对比。亮点：transformed, unprecedented convenience."}]');
 var LD=JSON.parse('[{"y":"CET-4","t":"University Library","s":"美式","x":"The university library is open from 8am to 10pm. You can borrow up to ten books for two weeks. Free Wi-Fi is available."},{"y":"CET-6","t":"Climate Change","s":"英式","x":"Scientists warn climate change is causing more extreme weather. Rising temperatures lead to more heatwaves. Coastal cities are vulnerable to rising sea levels."}]');
 var ED=JSON.parse('[{"t":"听力技巧","m":"Listening","sec":[{"h":"新闻听力","c":"首句是核心(5W1H)"},{"h":"长对话","c":"关注but/however后的转折"}]},{"t":"阅读技巧","m":"Reading","sec":[{"h":"选词填空","c":"先标词性"},{"h":"仔细阅读","c":"细节定位精读"}]},{"t":"翻译技巧","m":"Translation","sec":[{"h":"核心","c":"语法正确即可"}]}]');
-var OK="sk-91cc485d56fc4dee8b2aba2b6a2ac58a";
 var msgs=[{role:"system",content:"You are Eliza, a friendly CET-4/6 English tutor. Keep responses under 150 words."}];
 
 function swT(i){
@@ -115,12 +114,12 @@ function gC(id){
 function am(t,r){
   var el=document.getElementById("cm");if(!el)return;
   var d=document.createElement("div");d.className="m "+r;
-  if(r=="e"){d.innerHTML='<span class="l">Eliza</span>'+t.replace(/\n/g,"<br>")}else{d.textContent=t}
+  if(r=="e"){var label=document.createElement('span');label.className='l';label.textContent='Eliza';d.appendChild(label);d.appendChild(document.createTextNode(t))}else{d.textContent=t}
   el.appendChild(d);el.scrollTop=el.scrollHeight;
 }
 function sl(){var el=document.getElementById("cm");if(!el)return;var d=document.createElement("div");d.className="m e";d.id="cl";d.innerHTML='<span class="l">Eliza</span>⏳';el.appendChild(d);el.scrollTop=el.scrollHeight}
 function hl(){var el=document.getElementById("cl");if(el)el.remove()}
-var _xf="https://api.deepseek.com/chat/completions";
+var _xf="/api/chat";
 var _useDeepSeek=true;
 function snd(){
   var inp=document.getElementById("inp");var txt=inp.value.trim();if(!txt)return;
@@ -128,7 +127,6 @@ function snd(){
   var xhr=new XMLHttpRequest();
   xhr.open("POST", _xf, true);
   xhr.setRequestHeader("Content-Type","application/json");
-  xhr.setRequestHeader("Authorization","Bearer "+OK);
   xhr.onload=function(){hl();try{var d=JSON.parse(xhr.responseText);if(d.error){am("API: "+d.error.message,"e")}else{var r=d.choices[0].message.content.trim();am(r,"e");msgs.push({role:"assistant",content:r})}}catch(e){am("Parse error","e")}};
   xhr.onerror=function(){hl();am("请求失败。检查网络连接。","e")};
   xhr.send(JSON.stringify({model:"deepseek-chat",messages:msgs,max_tokens:500,stream:false}));

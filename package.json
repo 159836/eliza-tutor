@@ -1,1 +1,8 @@
-﻿{"name":"eliza-proxy","version":"1.0.0","main":"server.js"}
+{
+  "name": "eliza-tutor",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  }
+}
